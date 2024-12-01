@@ -1,0 +1,13 @@
+Given width: 100
+Number of rectangles: 10
+Width	Height
+82	42
+69	33
+75	40
+87	48
+93	30
+77	48
+83	32
+70	49
+61	34
+63	29
