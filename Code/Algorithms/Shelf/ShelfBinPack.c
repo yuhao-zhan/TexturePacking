@@ -28,7 +28,14 @@ int compareItems(const void* a, const void* b) {
     return itemB->height - itemA->height; // 按高度降序排序
 }
 
-// 将物品放入货架
+// 输出货架的状态
+void printShelfStatus(int numShelves) {
+    for (int i = 0; i < numShelves; i++) {
+        printf("Shelf %d: Width %d, Height %d\n", i + 1, shelves[i].width, shelves[i].maxHeight);
+    }
+}
+
+// 将物品放入货架并可视化
 void placeItemsOnShelves(Item items[], int numItems) {
     int numShelves = 0;  // 当前使用的货架数
     int currentShelf = 0; // 当前使用的货架索引
@@ -40,6 +47,9 @@ void placeItemsOnShelves(Item items[], int numItems) {
     }
 
     for (int i = 0; i < numItems; i++) {
+        // 输出物品信息
+        printf("\nPlacing item %d (Width: %d, Height: %d)\n", i + 1, items[i].width, items[i].height);
+
         // 检查当前货架是否有足够的宽度来放置物品
         if (shelves[currentShelf].width + items[i].width <= WIDTH) {
             // 如果可以放下，放置物品并更新货架状态
@@ -47,6 +57,10 @@ void placeItemsOnShelves(Item items[], int numItems) {
             if (items[i].height > shelves[currentShelf].maxHeight) {
                 shelves[currentShelf].maxHeight = items[i].height;
             }
+
+            // 输出当前货架状态
+            printf("Placed on Shelf %d\n", currentShelf + 1);
+            printShelfStatus(currentShelf + 1);
         } else {
             // 如果当前货架放不下该物品，换到下一个货架
             currentShelf++;
@@ -57,6 +71,10 @@ void placeItemsOnShelves(Item items[], int numItems) {
             // 将物品放入新货架
             shelves[currentShelf].width = items[i].width;
             shelves[currentShelf].maxHeight = items[i].height;
+
+            // 输出当前货架状态
+            printf("Placed on Shelf %d (New Shelf)\n", currentShelf + 1);
+            printShelfStatus(currentShelf + 1);
         }
     }
 
@@ -67,30 +85,29 @@ void placeItemsOnShelves(Item items[], int numItems) {
     }
 
     // 输出每个货架的宽度和高度，以及总高度
-    for (int i = 0; i <= currentShelf; i++) {
-        printf("Shelf %d: Width %d, Height %d\n", i + 1, shelves[i].width, shelves[i].maxHeight);
-    }
+    printf("\nFinal shelf status:\n");
+    printShelfStatus(currentShelf + 1);
 
     // 输出总高度
-    printf("Height of all shelves: %d\n", totalHeight);
+    printf("\nHeight of all shelves: %d\n", totalHeight);
 }
 
 int main() {
     int numItems;
 
     // 输入物品数量
-    printf("the number of items: ");
+    printf("The number of items: ");
     scanf("%d", &numItems);
     
     // 校验物品数量
     if (numItems < 1 || numItems > MAX_ITEMS) {
-        printf("warning: amounts of items out of range!\n");
+        printf("Warning: amounts of items out of range!\n");
         return -1;
     }
 
     // 输入每个物品的宽度和高度
     for (int i = 0; i < numItems; i++) {
-        printf("please input item %d's width and height: ", i + 1);
+        printf("Please input item %d's width and height: ", i + 1);
         scanf("%d %d", &items[i].width, &items[i].height);
 
         // 校验物品的宽度和高度
@@ -99,11 +116,13 @@ int main() {
             return -1;
         }
     }
+
     printf("WIDTH = %d\n", WIDTH);
+
     // 按高度降序排序物品
     qsort(items, numItems, sizeof(Item), compareItems);
 
-    // 放置物品到货架
+    // 放置物品到货架并进行可视化
     placeItemsOnShelves(items, numItems);
 
     return 0;
